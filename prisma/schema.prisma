@@ -13,6 +13,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  STUDENT
+}
+
 model User {
   id             String       @id @default(uuid())
   email          String       @unique
@@ -20,16 +25,40 @@ model User {
   role           Role
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId String
+  submissions    Submission[]
   createdAt      DateTime     @default(now())
 }
 
 model Organization {
-  id    String @id @default(uuid())
-  name  String
-  users User[]
+  id          String       @id @default(uuid())
+  name        String
+  users       User[]
+  submissions Submission[]
 }
 
-enum Role {
-  ADMIN
-  STUDENT
+model Submission {
+  id             String           @id @default(uuid())
+  title          String
+  description    String
+  fileUrl        String
+  status         SubmissionStatus
+  student        User             @relation(fields: [studentId], references: [id])
+  studentId      String
+  organization   Organization     @relation(fields: [organizationId], references: [id])
+  organizationId String
+  createdAt      DateTime         @default(now())
+  Category       Category?        @relation(fields: [categoryId], references: [id])
+  categoryId     String?
+}
+
+model Category {
+  id          String       @id @default(uuid())
+  name        String
+  submissions Submission[]
+}
+
+enum SubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }

@@ -8,8 +8,9 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const JWT_SECRET = process.env.JWT_SECRET || 'defaultsecret';
 const authMiddleware = (req, res, next) => {
     const authHeader = req.headers.authorization;
-    if (!authHeader)
+    if (!authHeader) {
         return res.status(401).json({ error: 'No token provided' });
+    }
     const token = authHeader.split(' ')[1];
     try {
         const decoded = jsonwebtoken_1.default.verify(token, JWT_SECRET);
