@@ -27,6 +27,7 @@ model User {
   organizationId String
   submissions    Submission[]
   createdAt      DateTime     @default(now())
+  Comment        Comment[]
 }
 
 model Organization {
@@ -49,12 +50,22 @@ model Submission {
   createdAt      DateTime         @default(now())
   Category       Category?        @relation(fields: [categoryId], references: [id])
   categoryId     String?
+  Comment        Comment[]
 }
 
 model Category {
   id          String       @id @default(uuid())
   name        String
   submissions Submission[]
+}
+
+model Comment {
+  id           String     @id @default(uuid())
+  content      String
+  userId       String
+  user         User       @relation(fields: [userId], references: [id])
+  submissionId String
+  submission   Submission @relation(fields: [submissionId], references: [id])
 }
 
 enum SubmissionStatus {

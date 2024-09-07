@@ -23,7 +23,9 @@ router.get('/submissions', auth_1.authMiddleware, auth_1.adminOnly, (req, res) =
         });
     }
     const submissions = yield db_1.prismaClient.submission.findMany({
-        where: { status: 'PENDING', organizationId: req.user.organizationId },
+        where: {
+            status: 'PENDING', organizationId: req.user.organizationId
+        },
     });
     res.json(submissions);
 }));
