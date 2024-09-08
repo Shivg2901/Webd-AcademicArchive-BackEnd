@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'defaultsecret';
 
+//for logged in users
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
     const authHeader = req.headers.authorization;
@@ -22,6 +23,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     }
 };
 
+//for admin access
 export const adminOnly = (req: Request, res: Response, next: NextFunction) => {
     //@ts-ignore
     if (req.user.role !== 'ADMIN') {

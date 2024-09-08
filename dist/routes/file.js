@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const upload_1 = require("../middleware/upload");
 const router = express_1.default.Router();
+//route to get back fileurl 
 router.post('/upload', upload_1.upload.single('file'), (req, res) => {
     const file = req.file;
     if (!file) {

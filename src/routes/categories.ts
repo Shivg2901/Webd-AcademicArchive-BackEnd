@@ -4,6 +4,7 @@ import { adminOnly } from '../middleware/auth';
 
 const router = express.Router();
 
+//admin creates category
 router.post('/create', adminOnly, async (req: Request, res: Response) => {
   const { name } = req.body;
 
@@ -29,7 +30,7 @@ router.post('/create', adminOnly, async (req: Request, res: Response) => {
   }
 });
 
-
+//fetch categories
 router.get('/', async (req: Request, res: Response) => {
   try {
     const categories = await prismaClient.category.findMany();

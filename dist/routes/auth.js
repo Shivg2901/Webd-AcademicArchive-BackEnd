@@ -29,6 +29,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const db_1 = require("../config/db");
 const router = express_1.default.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'defaultsecret';
+//role based registration
 router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password, role, organizationId } = req.body;
     if (!email || !password || !role || !organizationId) {
@@ -58,6 +59,7 @@ router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, functio
         });
     }
 }));
+//login and get jwt
 router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     const user = yield db_1.prismaClient.user.findUnique({

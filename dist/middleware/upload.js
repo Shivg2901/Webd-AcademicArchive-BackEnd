@@ -7,6 +7,7 @@ exports.upload = void 0;
 const multer_1 = __importDefault(require("multer"));
 const multer_s3_1 = __importDefault(require("multer-s3"));
 const aws_1 = require("../config/aws");
+//middleware to upload file
 exports.upload = (0, multer_1.default)({
     storage: (0, multer_s3_1.default)({
         s3: aws_1.s3Client,

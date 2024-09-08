@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 
 const router = express.Router();
 
+//create org and initial admin
 router.post('/create-admin-org', async (req, res) => {
   const { organizationName, adminEmail, adminPassword } = req.body;
 
@@ -17,7 +18,7 @@ router.post('/create-admin-org', async (req, res) => {
     
     const hashedPassword = await bcrypt.hash(adminPassword, 10);
 
-    
+    //transaction so that if organisation is made an admin is made along with it
     const result = await prismaClient.$transaction([
       prismaClient.organization.create({
         data: {

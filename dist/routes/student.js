@@ -16,6 +16,7 @@ const express_1 = __importDefault(require("express"));
 const db_1 = require("../config/db");
 const auth_1 = require("../middleware/auth");
 const router = express_1.default.Router();
+//dashboard to get approved submissions
 router.get('/dashboard', auth_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const submissions = yield db_1.prismaClient.submission.findMany({
@@ -26,6 +27,7 @@ router.get('/dashboard', auth_1.authMiddleware, (req, res) => __awaiter(void 0, 
     });
     res.json(submissions);
 }));
+//route to create submission
 router.post('/upload', auth_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _b, _c;
     const { title, description, fileUrl, categoryId } = req.body;
@@ -57,6 +59,7 @@ router.post('/upload', auth_1.authMiddleware, (req, res) => __awaiter(void 0, vo
         });
     }
 }));
+//route to assign category to submission
 router.put('/submission/:id/category', auth_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const { categoryId } = req.body;
@@ -82,6 +85,7 @@ router.put('/submission/:id/category', auth_1.authMiddleware, (req, res) => __aw
         });
     }
 }));
+//route to fetch submissions based on category 
 router.get('/submissions/category/:categoryId', auth_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _d;
     const { categoryId } = req.params;
@@ -101,6 +105,7 @@ router.get('/submissions/category/:categoryId', auth_1.authMiddleware, (req, res
         });
     }
 }));
+//route to make comment to a submission
 router.post('/:submissionId/comment', auth_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { submissionId } = req.params;
     const { content } = req.body;
@@ -126,6 +131,7 @@ router.post('/:submissionId/comment', auth_1.authMiddleware, (req, res) => __awa
         });
     }
 }));
+//route to fetch comments for a submission
 router.get('/:submissionId/comments', auth_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { submissionId } = req.params;
     try {
@@ -140,6 +146,48 @@ router.get('/:submissionId/comments', auth_1.authMiddleware, (req, res) => __awa
         res.status(400).json({
             error: 'Error fetching comments'
         });
+    }
+}));
+//route to search for submissions by title, description, category
+router.get('/search', auth_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { q } = req.query;
+    try {
+        const searchResults = yield db_1.prismaClient.submission.findMany({
+            where: {
+                status: 'APPROVED',
+                OR: q
+                    ? [
+                        {
+                            title: {
+                                contains: q,
+                                mode: 'insensitive',
+                            },
+                        },
+                        {
+                            description: {
+                                contains: q,
+                                mode: 'insensitive',
+                            },
+                        },
+                        {
+                            Category: {
+                                name: {
+                                    contains: q,
+                                    mode: 'insensitive',
+                                },
+                            },
+                        },
+                    ]
+                    : undefined,
+            },
+            include: {
+                Category: true,
+            },
+        });
+        res.status(200).json(searchResults);
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Error searching submissions' });
     }
 }));
 exports.default = router;

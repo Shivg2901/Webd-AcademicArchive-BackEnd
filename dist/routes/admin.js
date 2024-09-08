@@ -16,6 +16,7 @@ const express_1 = __importDefault(require("express"));
 const db_1 = require("../config/db");
 const auth_1 = require("../middleware/auth");
 const router = express_1.default.Router();
+//get all pending submissions
 router.get('/', auth_1.authMiddleware, auth_1.adminOnly, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.user || !req.user.organizationId) {
         return res.json({
@@ -29,6 +30,7 @@ router.get('/', auth_1.authMiddleware, auth_1.adminOnly, (req, res) => __awaiter
     });
     res.json(submissions);
 }));
+//route to approve submission
 router.put('/:id/approve', auth_1.authMiddleware, auth_1.adminOnly, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const submission = yield db_1.prismaClient.submission.update({
@@ -39,6 +41,7 @@ router.put('/:id/approve', auth_1.authMiddleware, auth_1.adminOnly, (req, res) =
     });
     res.json(submission);
 }));
+//route to reject submission
 router.put('/:id/reject', auth_1.authMiddleware, auth_1.adminOnly, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const submission = yield db_1.prismaClient.submission.update({
@@ -49,6 +52,7 @@ router.put('/:id/reject', auth_1.authMiddleware, auth_1.adminOnly, (req, res) =>
     });
     res.json(submission);
 }));
+//route to make updates
 router.put('/:id', auth_1.authMiddleware, auth_1.adminOnly, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const updatedSubmission = yield db_1.prismaClient.submission.update({
@@ -57,6 +61,7 @@ router.put('/:id', auth_1.authMiddleware, auth_1.adminOnly, (req, res) => __awai
     });
     res.json(updatedSubmission);
 }));
+//route to delete submission
 router.delete('/:id', auth_1.authMiddleware, auth_1.adminOnly, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     yield db_1.prismaClient.submission.delete({

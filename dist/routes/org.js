@@ -16,6 +16,7 @@ const express_1 = __importDefault(require("express"));
 const db_1 = require("../config/db");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const router = express_1.default.Router();
+//create org and initial admin
 router.post('/create-admin-org', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { organizationName, adminEmail, adminPassword } = req.body;
     if (!organizationName || !adminEmail || !adminPassword) {
@@ -25,6 +26,7 @@ router.post('/create-admin-org', (req, res) => __awaiter(void 0, void 0, void 0,
     }
     try {
         const hashedPassword = yield bcryptjs_1.default.hash(adminPassword, 10);
+        //transaction so that if organisation is made an admin is made along with it
         const result = yield db_1.prismaClient.$transaction([
             db_1.prismaClient.organization.create({
                 data: {

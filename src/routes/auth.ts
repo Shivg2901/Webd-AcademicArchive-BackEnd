@@ -21,7 +21,7 @@ interface LoginRequestBody {
   password: string;
 }
 
-
+//role based registration
 router.post('/register', async (req: Request<{}, {}, RegisterRequestBody>, res: Response) => {
 
     const { email, password, role, organizationId } = req.body;
@@ -60,6 +60,7 @@ router.post('/register', async (req: Request<{}, {}, RegisterRequestBody>, res: 
     }
 });
 
+//login and get jwt
 router.post('/login', async (req: Request<{}, {}, LoginRequestBody>, res: Response) => {
 
     const { email, password } = req.body;

@@ -3,6 +3,7 @@ import { upload } from '../middleware/upload';
 
 const router = express.Router();
 
+//route to get back fileurl 
 router.post('/upload', upload.single('file'), (req, res) => {
   const file = req.file as Express.MulterS3.File;
 

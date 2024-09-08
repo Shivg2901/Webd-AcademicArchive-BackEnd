@@ -4,6 +4,7 @@ import { authMiddleware } from '../middleware/auth';
 
 const router = express.Router();
 
+//dashboard to get approved submissions
 router.get('/dashboard', authMiddleware, async (req, res) => {
   const submissions = await prismaClient.submission.findMany({
     where: {
@@ -14,6 +15,7 @@ router.get('/dashboard', authMiddleware, async (req, res) => {
   res.json(submissions);
 });
 
+//route to create submission
 router.post('/upload', authMiddleware, async (req, res) => {
   const { title, description, fileUrl, categoryId } = req.body;
 
@@ -49,7 +51,7 @@ router.post('/upload', authMiddleware, async (req, res) => {
   }
 });
 
-
+//route to assign category to submission
 router.put('/submission/:id/category', authMiddleware, async (req, res) => {
   const { id } = req.params;
   const { categoryId } = req.body;
@@ -77,6 +79,7 @@ router.put('/submission/:id/category', authMiddleware, async (req, res) => {
   }
 });
 
+//route to fetch submissions based on category 
 router.get('/submissions/category/:categoryId', authMiddleware, async (req, res) => {
   const { categoryId } = req.params;
 
@@ -96,6 +99,7 @@ router.get('/submissions/category/:categoryId', authMiddleware, async (req, res)
   }
 });
 
+//route to make comment to a submission
 router.post('/:submissionId/comment', authMiddleware, async (req, res) => {
   const { submissionId } = req.params;
   const { content } = req.body;
@@ -123,7 +127,7 @@ router.post('/:submissionId/comment', authMiddleware, async (req, res) => {
   }
 });
 
-
+//route to fetch comments for a submission
 router.get('/:submissionId/comments', authMiddleware, async (req, res) => {
   const { submissionId } = req.params;
 
@@ -141,5 +145,52 @@ router.get('/:submissionId/comments', authMiddleware, async (req, res) => {
   }
 });
 
+//route to search for submissions by title, description, category
+router.get('/search', authMiddleware, async (req, res) => {
+  const { q } = req.query; 
+
+  try {
+    const searchResults = await prismaClient.submission.findMany({
+      where: {
+        status: 'APPROVED',
+        OR: q
+          ? [
+              {
+                title: {
+                  contains: q as string,
+                  mode: 'insensitive', 
+                },
+              },
+              {
+                description: {
+                  contains: q as string,
+                  mode: 'insensitive',
+                },
+              },
+              {
+                Category: {
+                  name: {
+                    contains: q as string,
+                    mode: 'insensitive',
+                  },
+                },
+              },
+            ]
+          : undefined, 
+      },
+      include: {
+        Category: true, 
+      },
+    });
+
+    res.status(200).json(searchResults);
+  } catch (error) {
+    res.status(500).json({ error: 'Error searching submissions' });
+  }
+});
 
 export default router;
+
+
+
+

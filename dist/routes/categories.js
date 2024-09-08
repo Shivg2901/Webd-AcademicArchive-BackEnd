@@ -16,6 +16,7 @@ const express_1 = __importDefault(require("express"));
 const db_1 = require("../config/db");
 const auth_1 = require("../middleware/auth");
 const router = express_1.default.Router();
+//admin creates category
 router.post('/create', auth_1.adminOnly, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name } = req.body;
     if (!name) {
@@ -37,6 +38,7 @@ router.post('/create', auth_1.adminOnly, (req, res) => __awaiter(void 0, void 0,
         });
     }
 }));
+//fetch categories
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const categories = yield db_1.prismaClient.category.findMany();
