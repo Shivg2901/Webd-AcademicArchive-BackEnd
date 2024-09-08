@@ -18,47 +18,62 @@ router.post('/upload', authMiddleware, async (req, res) => {
   const { title, description, fileUrl, categoryId } = req.body;
 
   if (!req.user || !req.user?.organizationId || !req.user?.userId) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-
-  if (!categoryId) {
-    return res.status(400).json({ message: 'Category is required' });
+    return res.status(401).json({
+     message: 'Unauthorized' 
+    });
   }
 
   try {
+    const submissionData: any = {
+      title,
+      description,
+      fileUrl,
+      status: 'PENDING',
+      studentId: req.user.userId,
+      organizationId: req.user.organizationId,
+    };
+
+    if (categoryId) {
+      submissionData.categoryId = categoryId;
+    }
+
     const submission = await prismaClient.submission.create({
-      data: {
-        title,
-        description,
-        fileUrl,
-        status: 'PENDING',
-        studentId: req.user.userId,
-        organizationId: req.user.organizationId,
-        categoryId,
-      },
+      data: submissionData,
     });
+
     res.status(201).json(submission);
   } catch (error) {
-    res.status(400).json({ error: 'Error uploading submission' });
+    res.status(400).json({
+       error: 'Error uploading submission' 
+    });
   }
 });
+
 
 router.put('/submission/:id/category', authMiddleware, async (req, res) => {
   const { id } = req.params;
   const { categoryId } = req.body;
   
   if (!categoryId) {
-    return res.status(400).json({ message: 'Category is required' });
+    return res.status(400).json({
+      message: 'Category is required'
+    });
   }
 
   try {
     const submission = await prismaClient.submission.update({
-      where: { id },
-      data: { categoryId },
+      where: {
+        id 
+      },
+      data: {
+        categoryId 
+      },
     });
     res.status(200).json(submission);
   } catch (error) {
-    res.status(400).json({ error: 'Error updating submission category' });
+    res.status(400).json({
+     error: 'Error updating submission category' 
+    });
   }
 });
 
@@ -75,7 +90,9 @@ router.get('/submissions/category/:categoryId', authMiddleware, async (req, res)
     });
     res.json(submissions);
   } catch (error) {
-    res.status(400).json({ error: 'Error fetching submissions' });
+    res.status(400).json({
+      error: 'Error fetching submissions' 
+    });
   }
 });
 
@@ -84,7 +101,9 @@ router.post('/:submissionId/comment', authMiddleware, async (req, res) => {
   const { content } = req.body;
 
   if (!req.user) {
-    return res.status(401).json({ message: 'Unauthorized' });
+    return res.status(401).json({
+     message: 'Unauthorized' 
+    });
   }
 
   try {
@@ -98,7 +117,9 @@ router.post('/:submissionId/comment', authMiddleware, async (req, res) => {
     res.status(201).json(comment);
   } catch (error) {
     console.log(error)
-    res.status(400).json({ error: 'Error adding comment' });
+    res.status(400).json({
+     error: 'Error adding comment' 
+    });
   }
 });
 
@@ -114,7 +135,9 @@ router.get('/:submissionId/comments', authMiddleware, async (req, res) => {
     });
     res.status(200).json(comments);
   } catch (error) {
-    res.status(400).json({ error: 'Error fetching comments' });
+    res.status(400).json({
+     error: 'Error fetching comments' 
+    });
   }
 });
 

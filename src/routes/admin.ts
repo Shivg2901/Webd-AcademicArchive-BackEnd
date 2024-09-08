@@ -4,7 +4,7 @@ import { adminOnly, authMiddleware } from '../middleware/auth';
 
 const router = express.Router();
 
-router.get('/submissions', authMiddleware, adminOnly, async (req, res) => {
+router.get('/', authMiddleware, adminOnly, async (req, res) => {
     if(!req.user || !req.user.organizationId) {
 
         return res.json({
@@ -19,25 +19,29 @@ router.get('/submissions', authMiddleware, adminOnly, async (req, res) => {
     res.json(submissions);
 });
 
-router.put('/submissions/:id/approve', authMiddleware, adminOnly, async (req, res) => {
+router.put('/:id/approve', authMiddleware, adminOnly, async (req, res) => {
     const { id } = req.params;
     const submission = await prismaClient.submission.update({
         where: { id },
-        data: { status: 'APPROVED' },
+        data: {
+            status: 'APPROVED'
+        },
     });
     res.json(submission);
 });
 
-router.put('/submissions/:id/reject', authMiddleware, adminOnly, async (req, res) => {
+router.put('/:id/reject', authMiddleware, adminOnly, async (req, res) => {
     const { id } = req.params;
     const submission = await prismaClient.submission.update({
         where: { id },
-        data: { status: 'REJECTED' },
+        data: {
+            status: 'REJECTED' 
+        },
     });
     res.json(submission);
 });
 
-router.put('/submissions/:id', authMiddleware, adminOnly, async (req, res) => {
+router.put('/:id', authMiddleware, adminOnly, async (req, res) => {
     const { id } = req.params;
     const updatedSubmission = await prismaClient.submission.update({
         where: { id },
@@ -46,10 +50,14 @@ router.put('/submissions/:id', authMiddleware, adminOnly, async (req, res) => {
     res.json(updatedSubmission);
 });
 
-router.delete('/submissions/:id', authMiddleware, adminOnly, async (req, res) => {
+router.delete('/:id', authMiddleware, adminOnly, async (req, res) => {
     const { id } = req.params;
-    await prismaClient.submission.delete({ where: { id } });
-    res.json({ message: 'Submission deleted' });
+    await prismaClient.submission.delete({
+        where: { id } 
+    });
+    res.json({
+        message: 'Submission deleted' 
+    });
 });
 
 export default router;

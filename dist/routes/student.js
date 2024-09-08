@@ -30,44 +30,56 @@ router.post('/upload', auth_1.authMiddleware, (req, res) => __awaiter(void 0, vo
     var _b, _c;
     const { title, description, fileUrl, categoryId } = req.body;
     if (!req.user || !((_b = req.user) === null || _b === void 0 ? void 0 : _b.organizationId) || !((_c = req.user) === null || _c === void 0 ? void 0 : _c.userId)) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
-    if (!categoryId) {
-        return res.status(400).json({ message: 'Category is required' });
+        return res.status(401).json({
+            message: 'Unauthorized'
+        });
     }
     try {
+        const submissionData = {
+            title,
+            description,
+            fileUrl,
+            status: 'PENDING',
+            studentId: req.user.userId,
+            organizationId: req.user.organizationId,
+        };
+        if (categoryId) {
+            submissionData.categoryId = categoryId;
+        }
         const submission = yield db_1.prismaClient.submission.create({
-            data: {
-                title,
-                description,
-                fileUrl,
-                status: 'PENDING',
-                studentId: req.user.userId,
-                organizationId: req.user.organizationId,
-                categoryId,
-            },
+            data: submissionData,
         });
         res.status(201).json(submission);
     }
     catch (error) {
-        res.status(400).json({ error: 'Error uploading submission' });
+        res.status(400).json({
+            error: 'Error uploading submission'
+        });
     }
 }));
 router.put('/submission/:id/category', auth_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const { categoryId } = req.body;
     if (!categoryId) {
-        return res.status(400).json({ message: 'Category is required' });
+        return res.status(400).json({
+            message: 'Category is required'
+        });
     }
     try {
         const submission = yield db_1.prismaClient.submission.update({
-            where: { id },
-            data: { categoryId },
+            where: {
+                id
+            },
+            data: {
+                categoryId
+            },
         });
         res.status(200).json(submission);
     }
     catch (error) {
-        res.status(400).json({ error: 'Error updating submission category' });
+        res.status(400).json({
+            error: 'Error updating submission category'
+        });
     }
 }));
 router.get('/submissions/category/:categoryId', auth_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -84,14 +96,18 @@ router.get('/submissions/category/:categoryId', auth_1.authMiddleware, (req, res
         res.json(submissions);
     }
     catch (error) {
-        res.status(400).json({ error: 'Error fetching submissions' });
+        res.status(400).json({
+            error: 'Error fetching submissions'
+        });
     }
 }));
 router.post('/:submissionId/comment', auth_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { submissionId } = req.params;
     const { content } = req.body;
     if (!req.user) {
-        return res.status(401).json({ message: 'Unauthorized' });
+        return res.status(401).json({
+            message: 'Unauthorized'
+        });
     }
     try {
         const comment = yield db_1.prismaClient.comment.create({
@@ -105,7 +121,9 @@ router.post('/:submissionId/comment', auth_1.authMiddleware, (req, res) => __awa
     }
     catch (error) {
         console.log(error);
-        res.status(400).json({ error: 'Error adding comment' });
+        res.status(400).json({
+            error: 'Error adding comment'
+        });
     }
 }));
 router.get('/:submissionId/comments', auth_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -119,7 +137,9 @@ router.get('/:submissionId/comments', auth_1.authMiddleware, (req, res) => __awa
         res.status(200).json(comments);
     }
     catch (error) {
-        res.status(400).json({ error: 'Error fetching comments' });
+        res.status(400).json({
+            error: 'Error fetching comments'
+        });
     }
 }));
 exports.default = router;

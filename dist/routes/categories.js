@@ -18,14 +18,23 @@ const auth_1 = require("../middleware/auth");
 const router = express_1.default.Router();
 router.post('/create', auth_1.adminOnly, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name } = req.body;
-    if (!name)
-        return res.status(400).json({ message: 'Category name is required' });
+    if (!name) {
+        return res.status(400).json({
+            message: 'Category name is required'
+        });
+    }
     try {
-        const category = yield db_1.prismaClient.category.create({ data: { name } });
-        return res.status(201).json({ message: 'Category created', category });
+        const category = yield db_1.prismaClient.category.create({
+            data: { name }
+        });
+        return res.status(201).json({
+            message: 'Category creted', category
+        });
     }
     catch (error) {
-        return res.status(400).json({ error: 'Error creating category' });
+        return res.status(400).json({
+            error: 'Error creating category'
+        });
     }
 }));
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -34,7 +43,9 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(200).json(categories);
     }
     catch (error) {
-        return res.status(400).json({ error: 'Error fetching categories' });
+        return res.status(400).json({
+            error: 'Error fetching categories'
+        });
     }
 }));
 exports.default = router;
