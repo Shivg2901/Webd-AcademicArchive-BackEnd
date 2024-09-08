@@ -1,3 +1,4 @@
+
 # Academic Submissions API
 
 The **Academic Submissions API** is a platform that allows students to upload academic submissions (e.g., notes, question papers), while admins can manage these submissions (approve/reject). Additionally, students can search through approved submissions, assign categories, and comment on submissions.
@@ -11,24 +12,32 @@ The **Academic Submissions API** is a platform that allows students to upload ac
 
 ## Environment Setup
 
-### 1. Clone the repository
+### 1. Clone the Repository
 
+```bash
 git clone https://github.com/Shivg2901/Webd-AcademicArchive-BackEnd.git
 cd Webd-AcademicArchive-BackEnd
+```
 
-### 2. Install dependencies
+### 2. Install Dependencies
 
+```bash
 npm install
+```
 
-### 3. Configure environment variables
+### 3. Configure Environment Variables
 
-populate .env with reference to .env.example
+Populate the `.env` file with reference to `.env.example`.
 
-### 4. Run Prisma migrations
+### 4. Run Prisma Migrations
 
+```bash
 npx prisma migrate dev
+```
 
-### 5. Start the development server
+### 5. Start the Development Server
 
+```bash
 tsc -b
 node dist/index.js
+```
