@@ -41,6 +41,7 @@ router.post('/register', async (req: Request<{}, {}, RegisterRequestBody>, res: 
             email,
             password: hashedPassword,
             role,
+            approved: role === 'STUDENT'? true: false,
             organizationId,
             },
         });
@@ -76,19 +77,25 @@ router.post('/login', async (req: Request<{}, {}, LoginRequestBody>, res: Respon
             error: 'Invalid email or password'
         })
     }
+    
+    if(user.role === 'ADMIN' && !user.approved) {
+        return res.status(410).json({
+            error: "Admin not approved"
+        })
+    }
 
     const isValidPassword: boolean = await compare(password, user.password);
     if (!isValidPassword) {
         return res.status(401).json({ 
             error: 'Invalid email or password' 
         });
-
     }
     const token: string = jwt.sign(
         {
             userId: user.id,
             role: user.role,
-            organizationId: user.organizationId
+            organizationId: user.organizationId,
+            approved: user.approved
         },
         JWT_SECRET,
         { expiresIn: '24h' } as SignOptions

@@ -5,6 +5,7 @@ import studentRouter from './routes/student';
 import catRouter from './routes/categories';
 import fileRouter from './routes/file';
 import orgRouter from './routes/org';
+import masterRouter from './routes/master';
 import { adminOnly, authMiddleware } from './middleware/auth';
 
 const app = express();
@@ -17,6 +18,7 @@ app.use('/student', authMiddleware, studentRouter);
 app.use('/category', authMiddleware, catRouter);
 app.use('/file', authMiddleware, fileRouter);
 app.use('/org', orgRouter);
+app.use('/master', masterRouter);
 
 const PORT = process.env.PORT || 3111;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

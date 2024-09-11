@@ -3,10 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.adminOnly = exports.authMiddleware = void 0;
+exports.masterAdminOnly = exports.adminOnly = exports.authMiddleware = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const JWT_SECRET = process.env.JWT_SECRET || 'defaultsecret';
-//for logged in users
 const authMiddleware = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
@@ -15,8 +14,11 @@ const authMiddleware = (req, res, next) => {
     const token = authHeader.split(' ')[1];
     try {
         const decoded = jsonwebtoken_1.default.verify(token, JWT_SECRET);
-        //@ts-ignore
         req.user = decoded;
+        // If user admin and not approved, deny access
+        if (req.user.role === 'ADMIN' && !req.user.approved) {
+            return res.status(403).json({ error: 'Admin account not approved yet' });
+        }
         next();
     }
     catch (error) {
@@ -24,12 +26,29 @@ const authMiddleware = (req, res, next) => {
     }
 };
 exports.authMiddleware = authMiddleware;
-//for admin access
+// Middleware for all admins
 const adminOnly = (req, res, next) => {
-    //@ts-ignore
-    if (req.user.role !== 'ADMIN') {
-        return res.status(403).json({ error: 'Access denied' });
+    if (req.user) {
+        if (req.user.role !== 'ADMIN' && req.user.role !== 'MASTER_ADMIN') {
+            return res.status(403).json({ error: 'Access denied. Admins only.' });
+        }
+        return next();
     }
-    next();
+    return res.status(403).json({ error: 'Access denied. Not logged in.' });
 };
 exports.adminOnly = adminOnly;
+// Middleware for master admin only
+const masterAdminOnly = (req, res, next) => {
+    if (req.user) {
+        if (req.user.role !== 'MASTER_ADMIN') {
+            return res.status(403).json({
+                error: 'Access denied. Master Admins only.'
+            });
+        }
+        return next();
+    }
+    return res.status(403).json({
+        error: 'Access denied. Not logged in.'
+    });
+};
+exports.masterAdminOnly = masterAdminOnly;

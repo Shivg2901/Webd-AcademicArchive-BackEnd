@@ -41,8 +41,8 @@ router.post('/upload', auth_1.authMiddleware, (req, res) => __awaiter(void 0, vo
             title,
             description,
             fileUrl,
-            status: 'PENDING',
-            studentId: req.user.userId,
+            status: req.user.role === 'STUDENT' ? 'PENDING' : 'APPROVED',
+            studentId: req.user.role === 'STUDENT' ? req.user.userId : null,
             organizationId: req.user.organizationId,
         };
         if (categoryId) {
@@ -56,32 +56,6 @@ router.post('/upload', auth_1.authMiddleware, (req, res) => __awaiter(void 0, vo
     catch (error) {
         res.status(400).json({
             error: 'Error uploading submission'
-        });
-    }
-}));
-//route to assign category to submission
-router.put('/submission/:id/category', auth_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const { categoryId } = req.body;
-    if (!categoryId) {
-        return res.status(400).json({
-            message: 'Category is required'
-        });
-    }
-    try {
-        const submission = yield db_1.prismaClient.submission.update({
-            where: {
-                id
-            },
-            data: {
-                categoryId
-            },
-        });
-        res.status(200).json(submission);
-    }
-    catch (error) {
-        res.status(400).json({
-            error: 'Error updating submission category'
         });
     }
 }));

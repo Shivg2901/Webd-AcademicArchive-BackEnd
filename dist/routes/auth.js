@@ -44,6 +44,7 @@ router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, functio
                 email,
                 password: hashedPassword,
                 role,
+                approved: role === 'STUDENT' ? true : false,
                 organizationId,
             },
         });
@@ -72,6 +73,11 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
             error: 'Invalid email or password'
         });
     }
+    if (user.role === 'ADMIN' && !user.approved) {
+        return res.status(410).json({
+            error: "Admin not approved"
+        });
+    }
     const isValidPassword = yield (0, bcryptjs_1.compare)(password, user.password);
     if (!isValidPassword) {
         return res.status(401).json({
@@ -81,7 +87,8 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
     const token = jsonwebtoken_1.default.sign({
         userId: user.id,
         role: user.role,
-        organizationId: user.organizationId
+        organizationId: user.organizationId,
+        approved: user.approved
     }, JWT_SECRET, { expiresIn: '24h' });
     res.json({ token });
 }));

@@ -30,8 +30,8 @@ router.post('/upload', authMiddleware, async (req, res) => {
       title,
       description,
       fileUrl,
-      status: 'PENDING',
-      studentId: req.user.userId,
+      status: req.user.role === 'STUDENT'? 'PENDING': 'APPROVED',
+      studentId: req.user.role === 'STUDENT'? req.user.userId: null,
       organizationId: req.user.organizationId,
     };
 

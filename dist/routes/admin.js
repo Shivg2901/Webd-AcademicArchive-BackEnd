@@ -71,4 +71,30 @@ router.delete('/:id', auth_1.authMiddleware, auth_1.adminOnly, (req, res) => __a
         message: 'Submission deleted'
     });
 }));
+//route to assign category to submission
+router.put('/:id/category', auth_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const { categoryId } = req.body;
+    if (!categoryId) {
+        return res.status(400).json({
+            message: 'Category is required'
+        });
+    }
+    try {
+        const submission = yield db_1.prismaClient.submission.update({
+            where: {
+                id
+            },
+            data: {
+                categoryId
+            },
+        });
+        res.status(200).json(submission);
+    }
+    catch (error) {
+        res.status(400).json({
+            error: 'Error updating submission category'
+        });
+    }
+}));
 exports.default = router;
