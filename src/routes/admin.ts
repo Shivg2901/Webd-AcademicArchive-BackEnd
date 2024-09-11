@@ -65,4 +65,32 @@ router.delete('/:id', authMiddleware, adminOnly, async (req, res) => {
     });
 });
 
+//route to assign category to submission
+router.put('/:id/category', authMiddleware, async (req, res) => {
+    const { id } = req.params;
+    const { categoryId } = req.body;
+    
+    if (!categoryId) {
+      return res.status(400).json({
+        message: 'Category is required'
+      });
+    }
+  
+    try {
+      const submission = await prismaClient.submission.update({
+        where: {
+          id 
+        },
+        data: {
+          categoryId 
+        },
+      });
+      res.status(200).json(submission);
+    } catch (error) {
+      res.status(400).json({
+       error: 'Error updating submission category' 
+      });
+    }
+  });
+
 export default router;

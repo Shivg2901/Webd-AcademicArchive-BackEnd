@@ -33,6 +33,7 @@ Populate the `.env` file with reference to `.env.example`.
 
 ```bash
 npx prisma migrate dev
+npx prisma generate
 ```
 
 ### 5. Start the Development Server
@@ -40,4 +41,10 @@ npx prisma migrate dev
 ```bash
 tsc -b
 node dist/index.js
+```
+
+### 6. Informal API Flowchart Link
+
+```
+https://app.creately.com/d/5wrGddJlDfj/edit
 ```
