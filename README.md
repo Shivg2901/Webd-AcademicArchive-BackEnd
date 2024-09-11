@@ -48,3 +48,9 @@ node dist/index.js
 ```
 https://app.creately.com/d/5wrGddJlDfj/edit
 ```
+
+### 7. Deployment Link
+
+```
+https://webd-academicarchive-backend-awys.onrender.com
+```
