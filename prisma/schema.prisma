@@ -16,6 +16,7 @@ datasource db {
 enum Role {
   ADMIN
   STUDENT
+  MASTER_ADMIN
 }
 
 model User {
@@ -23,6 +24,7 @@ model User {
   email          String       @unique
   password       String
   role           Role
+  approved       Boolean      @default(false)
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId String
   submissions    Submission[]
